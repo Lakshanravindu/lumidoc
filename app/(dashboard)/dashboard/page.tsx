@@ -15,10 +15,14 @@ export default async function DashboardPage() {
     .order("updated_at", { ascending: false });
 
   return (
-    <div className="p-6 lg:p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-white">Workspaces</h1>
-        <p className="mt-1 text-sm text-neutral-400">Organise your documents into workspaces</p>
+    <div className="p-6 lg:p-10">
+      <div className="mb-8 flex items-end justify-between">
+        <div>
+          <h1 className="font-display text-3xl italic text-paper">Workspaces</h1>
+          <p className="mt-1.5 text-sm text-paper-dim">Organise your documents into workspaces</p>
+        </div>
+        {/* Decorative gold rule */}
+        <div className="hidden h-px w-32 bg-gradient-to-l from-transparent via-gold/30 to-transparent lg:block" />
       </div>
       <WorkspaceList workspaces={(workspaces ?? []) as Tables<"workspaces">[]} />
     </div>
