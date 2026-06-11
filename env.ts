@@ -4,8 +4,8 @@ const serverSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   ANTHROPIC_API_KEY: z.string().min(1),
   VOYAGE_API_KEY: z.string().min(1),
-  RESEND_API_KEY: z.string().min(1),
-  RESEND_FROM_EMAIL: z.string().email(),
+  RESEND_API_KEY: z.string().min(1).optional(),
+  RESEND_FROM_EMAIL: z.string().email().optional(),
 });
 
 const clientSchema = z.object({
