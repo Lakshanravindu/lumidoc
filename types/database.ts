@@ -59,6 +59,98 @@ export type Database = {
         };
         Relationships: [];
       };
+      documents: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          user_id: string;
+          name: string;
+          storage_path: string;
+          mime_type: string;
+          size_bytes: number;
+          status: "processing" | "ready" | "error";
+          error_msg: string | null;
+          chunk_count: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          user_id: string;
+          name: string;
+          storage_path: string;
+          mime_type: string;
+          size_bytes: number;
+          status?: "processing" | "ready" | "error";
+          error_msg?: string | null;
+          chunk_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          user_id?: string;
+          name?: string;
+          storage_path?: string;
+          mime_type?: string;
+          size_bytes?: number;
+          status?: "processing" | "ready" | "error";
+          error_msg?: string | null;
+          chunk_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "documents_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      document_chunks: {
+        Row: {
+          id: string;
+          document_id: string;
+          user_id: string;
+          content: string;
+          chunk_index: number;
+          page_number: number | null;
+          embedding: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          document_id: string;
+          user_id: string;
+          content: string;
+          chunk_index: number;
+          page_number?: number | null;
+          embedding?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          document_id?: string;
+          user_id?: string;
+          content?: string;
+          chunk_index?: number;
+          page_number?: number | null;
+          embedding?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "document_chunks_document_id_fkey";
+            columns: ["document_id"];
+            referencedRelation: "documents";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -67,7 +159,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      [_ in never]: never;
+      document_status: "processing" | "ready" | "error";
     };
     CompositeTypes: {
       [_ in never]: never;
