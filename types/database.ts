@@ -151,15 +151,137 @@ export type Database = {
           },
         ];
       };
+      conversations: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          user_id: string;
+          title: string;
+          pinned: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          user_id: string;
+          title?: string;
+          pinned?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          user_id?: string;
+          title?: string;
+          pinned?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "conversations_workspace_id_fkey";
+            columns: ["workspace_id"];
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      messages: {
+        Row: {
+          id: string;
+          conversation_id: string;
+          user_id: string;
+          role: "user" | "assistant";
+          content: string;
+          source_chunk_ids: string[] | null;
+          feedback: -1 | 1 | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          conversation_id: string;
+          user_id: string;
+          role: "user" | "assistant";
+          content: string;
+          source_chunk_ids?: string[] | null;
+          feedback?: -1 | 1 | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          conversation_id?: string;
+          user_id?: string;
+          role?: "user" | "assistant";
+          content?: string;
+          source_chunk_ids?: string[] | null;
+          feedback?: -1 | 1 | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey";
+            columns: ["conversation_id"];
+            referencedRelation: "conversations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      conversation_documents: {
+        Row: {
+          conversation_id: string;
+          document_id: string;
+        };
+        Insert: {
+          conversation_id: string;
+          document_id: string;
+        };
+        Update: {
+          conversation_id?: string;
+          document_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "conversation_documents_conversation_id_fkey";
+            columns: ["conversation_id"];
+            referencedRelation: "conversations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "conversation_documents_document_id_fkey";
+            columns: ["document_id"];
+            referencedRelation: "documents";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      hybrid_search: {
+        Args: {
+          query_embedding: string;
+          query_text: string;
+          doc_ids: string[];
+          match_count?: number;
+        };
+        Returns: {
+          chunk_id: string;
+          document_id: string;
+          content: string;
+          chunk_index: number;
+          vector_score: number;
+          fts_score: number;
+          combined_score: number;
+        }[];
+      };
     };
     Enums: {
       document_status: "processing" | "ready" | "error";
+      message_role: "user" | "assistant";
     };
     CompositeTypes: {
       [_ in never]: never;

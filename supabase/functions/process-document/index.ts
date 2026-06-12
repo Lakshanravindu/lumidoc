@@ -104,9 +104,10 @@ async function extractText(uint8: Uint8Array, mimeType: string): Promise<string>
   }
 
   if (mimeType === "application/pdf") {
-    const { default: pdfParse } = await import("npm:pdf-parse@1");
+    const { PDFParse } = await import("npm:pdf-parse@2");
     const { Buffer } = await import("npm:buffer@6");
-    const result = await pdfParse(Buffer.from(uint8));
+    const parser = new PDFParse({ data: Buffer.from(uint8) });
+    const result = await parser.getText({ pageJoiner: "\n\n" });
     return result.text as string;
   }
 
