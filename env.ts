@@ -15,7 +15,11 @@ const clientSchema = z.object({
   NEXT_PUBLIC_APP_NAME: z.string().min(1),
 });
 
-function validateEnv() {
+type ClientEnv = z.infer<typeof clientSchema>;
+type ServerEnv = z.infer<typeof serverSchema>;
+type AppEnv = ClientEnv & ServerEnv;
+
+function validateEnv(): AppEnv {
   const isServer = typeof window === "undefined";
 
   const clientEnv = clientSchema.safeParse({
@@ -50,10 +54,11 @@ function validateEnv() {
       throw new Error("Invalid server environment variables");
     }
 
-    return { ...clientEnv.data, ...serverEnv.data };
+    return { ...clientEnv.data, ...serverEnv.data } as AppEnv;
   }
 
-  return clientEnv.data;
+  // On the client, server keys are not available at runtime — cast is safe
+  return clientEnv.data as AppEnv;
 }
 
 export const env = validateEnv();
