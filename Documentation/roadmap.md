@@ -9,18 +9,18 @@
 ## Roadmap Overview
 
 ```
-Phase 0  │ Week 1      │ Project Foundation & Dev Environment
-Phase 1  │ Week 2–3    │ Core Infrastructure (Auth + Storage + DB)
-Phase 2  │ Week 4–5    │ Document Processing Pipeline
-Phase 3  │ Week 6–7    │ RAG Engine + Chat Interface
-Phase 4  │ Week 8–9    │ Advanced Chat Features
-Phase 5  │ Week 10–11  │ Production Hardening & Performance
-Phase 6  │ Week 12     │ Launch Prep & Public Release
+Phase 0  │ Week 1      │ Project Foundation & Dev Environment        ✅ DONE
+Phase 1  │ Week 2–3    │ Core Infrastructure (Auth + Storage + DB)   ✅ DONE
+Phase 2  │ Week 4–5    │ Document Processing Pipeline                ✅ DONE
+Phase 3  │ Week 6–7    │ RAG Engine + Chat Interface                 ⬜ NEXT
+Phase 4  │ Week 8–9    │ Advanced Chat Features                      ⬜ PENDING
+Phase 5  │ Week 10–11  │ Production Hardening & Performance          ⬜ PENDING
+Phase 6  │ Week 12     │ Launch Prep & Public Release                ⬜ PENDING
 ```
 
 ---
 
-## Phase 0 — Project Foundation
+## Phase 0 — Project Foundation ✅
 
 **Duration:** Week 1  
 **Goal:** Dev environment, repo structure, tooling, design system ready.
@@ -32,7 +32,7 @@ Phase 6  │ Week 12     │ Launch Prep & Public Release
 - [x] Set up GitHub repository with branch strategy (`main`, `develop`, feature branches)
 - [x] Configure GitHub Actions CI: lint + type-check on every PR
 - [x] Set up Supabase project (local dev with Supabase CLI)
-- [ ] Configure Vercel project with preview deployments on PRs ← connect repo via vercel.com/new
+- [x] Configure Vercel project with preview deployments on PRs
 - [x] Install and configure Tailwind CSS + Shadcn/UI
 - [x] Set up environment variable schema with `zod` validation (`env.ts`)
 - [x] Create project folder structure (see Tech Spec)
@@ -42,86 +42,88 @@ Phase 6  │ Week 12     │ Launch Prep & Public Release
 
 ### Deliverables
 
-- Deployable "hello world" on Vercel preview URL
-- Supabase project with local dev running
-- CI passing on GitHub Actions
+- [x] Deployable "hello world" on Vercel preview URL
+- [x] Supabase project with local dev running
+- [x] CI passing on GitHub Actions
 
 ---
 
-## Phase 1 — Core Infrastructure
+## Phase 1 — Core Infrastructure ✅
 
 **Duration:** Week 2–3  
 **Goal:** Auth, user management, workspace model, and base UI shell working end-to-end.
 
 ### Week 2 — Authentication & Database Schema
 
-- [ ] Implement Supabase Auth: email/password + Google OAuth
-- [ ] Magic link login flow
-- [ ] Email verification on sign-up
-- [ ] Auth middleware for protected routes (`middleware.ts`)
-- [ ] Create all Supabase database migrations:
+- [x] Implement Supabase Auth: email/password + Google OAuth
+- [x] Magic link login flow
+- [x] Email verification on sign-up
+- [x] Auth middleware for protected routes (`middleware.ts`)
+- [x] Create all Supabase database migrations:
   - `user_profiles` table
   - `workspaces` table
-- [ ] Enable Row-Level Security (RLS) on all tables
-- [ ] Write RLS policies for user data isolation
+- [x] Enable Row-Level Security (RLS) on all tables
+- [x] Write RLS policies for user data isolation
 
 ### Week 3 — Dashboard Shell & Workspace UI
 
-- [ ] Landing page (hero, features, demo CTA)
-- [ ] Dashboard layout: sidebar + main content area
-- [ ] Workspace list page (create, rename, delete)
-- [ ] User profile page (display name, avatar, email)
-- [ ] Mobile-responsive nav and sidebar
+- [x] Landing page (hero, features, demo CTA)
+- [x] Dashboard layout: sidebar + main content area
+- [x] Workspace list page (create, rename, delete)
+- [x] User profile page (display name, avatar, email)
+- [x] Mobile-responsive nav and sidebar
 
 ### Deliverables
 
-- Auth flows working (sign up, login, logout, Google OAuth)
-- Dashboard shell rendered post-login
-- Workspace CRUD working
+- [x] Auth flows working (sign up, login, logout, Google OAuth)
+- [x] Dashboard shell rendered post-login
+- [x] Workspace CRUD working
 
 ---
 
-## Phase 2 — Document Processing Pipeline
+## Phase 2 — Document Processing Pipeline ✅
 
 **Duration:** Week 4–5  
 **Goal:** Upload any file type, extract text, chunk, embed, and store in pgvector — full pipeline working.
 
 ### Week 4 — Upload & Text Extraction
 
-- [ ] Create `documents` and `document_chunks` Supabase tables
-- [ ] Enable `pgvector` extension in Supabase
-- [ ] Create vector column (`VECTOR(1024)`) on `document_chunks`
-- [ ] Build file upload UI (drag-and-drop, multi-file, progress bar)
-- [ ] `POST /api/documents/upload` API route:
+- [x] Create `documents` and `document_chunks` Supabase tables
+- [x] Enable `pgvector` extension in Supabase
+- [x] Create vector column (`VECTOR(1024)`) on `document_chunks`
+- [x] Build file upload UI (drag-and-drop, multi-file, progress bar)
+- [x] `POST /api/documents/upload` API route:
   - Validate file type and size
   - Upload raw file to Supabase Storage (private bucket)
   - Create `document` record with status `processing`
   - Trigger Supabase Edge Function for processing
-- [ ] Text extraction per file type:
-  - PDF: `pdfjs-dist` (text layer) + Claude Vision fallback (scanned)
+- [x] Text extraction per file type:
+  - PDF: `pdf-parse` v2
   - DOCX: `mammoth`
   - TXT / MD / code files: direct read
   - XLSX / CSV: `SheetJS` → Markdown table conversion
-  - PPTX: slide extraction
+  - PPTX: slide extraction via JSZip XML parsing
   - Images (PNG/JPG/WEBP): `claude-haiku-4-5` Vision API
 
 ### Week 5 — Chunking, Embedding & Indexing
 
-- [ ] Implement recursive character text splitter (512 tokens, 50 overlap)
-- [ ] Inject metadata into each chunk (document ID, page, chunk index)
-- [ ] Call Voyage AI `voyage-3` API to generate 1024-dim embeddings
-- [ ] Store chunks + embeddings in `document_chunks` table
-- [ ] Create IVFFlat index on embedding column
-- [ ] Update document status to `ready` on completion
-- [ ] Error handling: failed documents set to `error` status with reason
-- [ ] Retry mechanism (3 attempts with exponential backoff)
-- [ ] Document library UI (list, grid view, status badges, search)
-- [ ] Document detail panel (metadata, chunk count, preview)
+- [x] Implement recursive character text splitter (512 tokens, 50 overlap)
+- [x] Inject metadata into each chunk (document ID, chunk index)
+- [x] Call Voyage AI `voyage-3` API to generate 1024-dim embeddings
+- [x] Store chunks + embeddings in `document_chunks` table
+- [x] Create IVFFlat index on embedding column
+- [x] Update document status to `ready` on completion
+- [x] Error handling: failed documents set to `error` status with reason
+- [x] Retry mechanism (3 attempts with exponential backoff)
+- [x] Document library UI (grid view, status badges, live polling)
+- [ ] Document detail panel (metadata, chunk count, preview) ← Phase 3 সময় add කළ හැකිය
+- [ ] Document search / filter ← Phase 3 সময় add කළ හැකිය
 
 ### Deliverables
 
-- Upload any supported file → processing complete → chunks + embeddings in DB
-- Document library page showing all uploads with status
+- [x] Upload any supported file → processing complete → chunks + embeddings in DB
+- [x] Document library page showing all uploads with status
+- [x] Edge Function `process-document` deployed to Supabase
 
 ---
 
