@@ -8,6 +8,7 @@ import {
   buildContext,
   generateFollowUpSuggestions,
 } from "@/lib/anthropic/chat";
+import { checkRateLimit } from "@/lib/ratelimit";
 
 const ChatRequestSchema = z.object({
   conversation_id: z.string().uuid(),
@@ -23,6 +24,9 @@ export async function POST(request: NextRequest) {
   if (authError || !user) {
     return new Response("Unauthorized", { status: 401 });
   }
+
+  const rateLimitRes = await checkRateLimit(user.id, "chat");
+  if (rateLimitRes) return rateLimitRes;
 
   const body = await request.json().catch(() => null);
   const parsed = ChatRequestSchema.safeParse(body);

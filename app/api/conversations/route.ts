@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit } from "@/lib/ratelimit";
 
 const CreateConversationSchema = z.object({
   workspace_id: z.string().uuid(),
@@ -47,6 +48,9 @@ export async function POST(request: NextRequest) {
   if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rateLimitRes = await checkRateLimit(user.id, "conversations");
+  if (rateLimitRes) return rateLimitRes;
 
   const body = await request.json().catch(() => null);
   const parsed = CreateConversationSchema.safeParse(body);

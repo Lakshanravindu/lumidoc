@@ -7,7 +7,7 @@ const anthropicProvider = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
 const CHAT_MODEL = "claude-sonnet-4-6";
 const SUGGESTIONS_MODEL = "claude-haiku-4-5-20251001";
 
-function buildSystemPrompt(settings?: WorkspaceSettings): string {
+export function buildSystemPrompt(settings?: WorkspaceSettings): string {
   const strict = settings?.strict_mode ?? true;
   const style = settings?.response_style ?? "detailed";
   const language = settings?.language ?? "English";

@@ -6,6 +6,8 @@ const serverSchema = z.object({
   VOYAGE_API_KEY: z.string().min(1),
   RESEND_API_KEY: z.string().min(1).optional(),
   RESEND_FROM_EMAIL: z.string().email().optional(),
+  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
 });
 
 const clientSchema = z.object({
