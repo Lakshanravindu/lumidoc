@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
   // Load conversation + scoped documents
   const { data: conversation, error: convError } = await supabase
     .from("conversations")
-    .select("*, conversation_documents(document_id)")
+    .select("*, conversation_documents(document_id), workspaces(settings)")
     .eq("id", conversation_id)
     .eq("user_id", user.id)
     .single();
@@ -50,6 +50,10 @@ export async function POST(request: NextRequest) {
   const documentIds = (conversation.conversation_documents as { document_id: string }[]).map(
     (cd) => cd.document_id
   );
+
+  const workspaceSettings = (conversation.workspaces as { settings: unknown } | null)?.settings as
+    | import("@/types").WorkspaceSettings
+    | undefined;
 
   if (documentIds.length === 0) {
     return new Response("No documents linked to this conversation", { status: 400 });
@@ -93,24 +97,30 @@ export async function POST(request: NextRequest) {
   const sourceChunkIds = chunks.map((c) => c.chunk_id);
 
   // Stream with onFinish callback to persist assistant message
-  const result = streamChatResponse(query, context, messageHistory, async (text) => {
-    await serviceClient.from("messages").insert({
-      conversation_id,
-      user_id: user.id,
-      role: "assistant",
-      content: text,
-      source_chunk_ids: sourceChunkIds,
-    });
+  const result = streamChatResponse(
+    query,
+    context,
+    messageHistory,
+    async (text) => {
+      await serviceClient.from("messages").insert({
+        conversation_id,
+        user_id: user.id,
+        role: "assistant",
+        content: text,
+        source_chunk_ids: sourceChunkIds,
+      });
 
-    // Auto-title conversation on first assistant message
-    if (!conversation.title || conversation.title === "New conversation") {
-      const shortTitle = query.slice(0, 60) + (query.length > 60 ? "…" : "");
-      await serviceClient
-        .from("conversations")
-        .update({ title: shortTitle, updated_at: new Date().toISOString() })
-        .eq("id", conversation_id);
-    }
-  });
+      // Auto-title conversation on first assistant message
+      if (!conversation.title || conversation.title === "New conversation") {
+        const shortTitle = query.slice(0, 60) + (query.length > 60 ? "…" : "");
+        await serviceClient
+          .from("conversations")
+          .update({ title: shortTitle, updated_at: new Date().toISOString() })
+          .eq("id", conversation_id);
+      }
+    },
+    workspaceSettings
+  );
 
   const sourcesJson = JSON.stringify(chunksWithNames);
 

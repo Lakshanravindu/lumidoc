@@ -1,30 +1,48 @@
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { streamText, generateText } from "ai";
 import { env } from "@/env";
-import type { SourceChunk } from "@/types";
+import type { SourceChunk, WorkspaceSettings } from "@/types";
 
 const anthropicProvider = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
 const CHAT_MODEL = "claude-sonnet-4-6";
 const SUGGESTIONS_MODEL = "claude-haiku-4-5-20251001";
 
-const SYSTEM_PROMPT = `You are LumiDoc, an AI assistant that answers questions based on the documents provided.
+function buildSystemPrompt(settings?: WorkspaceSettings): string {
+  const strict = settings?.strict_mode ?? true;
+  const style = settings?.response_style ?? "detailed";
+  const language = settings?.language ?? "English";
 
-Guidelines:
-- Answer only from the provided document context. If the answer isn't in the documents, say so clearly.
+  const styleGuide =
+    style === "concise"
+      ? "Be brief and to the point. Avoid unnecessary elaboration."
+      : style === "bullets"
+        ? "Structure your answer as bullet points or numbered lists wherever possible."
+        : "Be thorough and well-structured. Use headings and paragraphs as appropriate.";
+
+  const strictGuide = strict
+    ? "Answer ONLY from the provided document context. If the answer is not in the documents, say clearly that you cannot find it in the provided documents. Do not use outside knowledge."
+    : "Primarily answer from the provided document context. You may supplement with general knowledge when the documents don't cover the topic, but clearly indicate when you do so.";
+
+  return `You are LumiDoc, an AI assistant that answers questions based on the documents provided.
+
+Response language: ${language}
+${styleGuide}
+${strictGuide}
 - Cite specific parts of the documents when relevant.
-- Be concise but thorough.
-- Use markdown formatting for clarity (headings, bullet points, code blocks).
-- Never fabricate information not present in the context.`;
+- Use markdown formatting for clarity.
+- Never fabricate information.`;
+}
 
 export function streamChatResponse(
   query: string,
   context: string,
   history: { role: "user" | "assistant"; content: string }[],
-  onFinish?: (text: string) => Promise<void>
+  onFinish?: (text: string) => Promise<void>,
+  settings?: WorkspaceSettings
 ) {
   return streamText({
     model: anthropicProvider(CHAT_MODEL),
-    system: SYSTEM_PROMPT,
+    system: buildSystemPrompt(settings),
     messages: [
       ...history,
       {

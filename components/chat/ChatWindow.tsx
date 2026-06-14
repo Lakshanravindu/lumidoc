@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { Download } from "lucide-react";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { SourcePanel } from "./SourcePanel";
@@ -126,6 +127,20 @@ export function ChatWindow({ conversation, initialMessages }: ChatWindowProps) {
     <div className="flex h-full overflow-hidden">
       {/* Main chat area */}
       <div className="flex flex-col flex-1 min-w-0">
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 flex-shrink-0">
+          <h2 className="text-sm font-medium text-zinc-300 truncate">{conversation.title}</h2>
+          <a
+            href={`/api/conversations/${conversation.id}/export`}
+            download
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors"
+            title="Export as Markdown"
+          >
+            <Download size={13} />
+            Export
+          </a>
+        </div>
+
         <MessageList
           messages={messages}
           streamingContent={streamingContent}

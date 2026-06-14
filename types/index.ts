@@ -1,5 +1,23 @@
 export type DocumentStatus = "processing" | "ready" | "error";
 
+export type ResponseStyle = "concise" | "detailed" | "bullets";
+
+export interface WorkspaceSettings {
+  response_style: ResponseStyle;
+  strict_mode: boolean;
+  language: string;
+}
+
+export interface WorkspaceRecord {
+  id: string;
+  user_id: string;
+  name: string;
+  description: string | null;
+  settings: WorkspaceSettings;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface DocumentRecord {
   id: string;
   workspace_id: string;
