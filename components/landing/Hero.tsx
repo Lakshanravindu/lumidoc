@@ -121,7 +121,7 @@ function HeroVisual() {
         initial={{ opacity: 0, y: 40, rotateX: 8 }}
         animate={{ opacity: 1, y: 0, rotateX: 0 }}
         transition={{ duration: 1, delay: 0.4, ease }}
-        className="lumi-card absolute inset-0 overflow-hidden rounded-[1.6rem] border border-paper/[0.14] bg-ink-soft/95 p-7 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.85)] backdrop-blur-xl"
+        className="lumi-card absolute inset-0 overflow-hidden rounded-[1.6rem] border border-paper/[0.14] bg-ink-soft/95 p-7 shadow-[0_40px_120px_-20px_var(--lumi-shadow)] backdrop-blur-xl"
       >
         <div className="mb-5 flex items-center gap-2 text-[11px] text-paper-faint">
           <span className="h-2 w-2 rounded-full bg-ember/70" />
@@ -158,7 +158,7 @@ function HeroVisual() {
         initial={{ opacity: 0, y: 24, x: 10 }}
         animate={{ opacity: 1, y: 0, x: 0 }}
         transition={{ duration: 0.8, delay: 1.6, ease }}
-        className="lumi-card absolute -bottom-6 -right-4 w-60 rounded-2xl border border-paper/[0.16] bg-ink-raised p-4 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.75)] backdrop-blur-xl sm:-right-8"
+        className="lumi-card absolute -bottom-6 -right-4 w-60 rounded-2xl border border-paper/[0.16] bg-ink-raised p-4 shadow-[0_24px_60px_-12px_var(--lumi-shadow)] backdrop-blur-xl sm:-right-8"
       >
         <div className="flex items-center gap-2 text-[11px] font-medium text-gold">
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none">

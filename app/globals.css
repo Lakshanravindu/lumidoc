@@ -145,6 +145,11 @@
   --font-display: var(--font-instrument-serif);
 }
 
+/* theme-aware elevation shadow (dark default; softened in .lumi-light) */
+:root {
+  --lumi-shadow: rgba(0, 0, 0, 0.8);
+}
+
 /* depth: warm radial wash + vignette instead of flat black */
 .lumi-bg {
   background-color: var(--color-ink);
@@ -161,6 +166,38 @@
     rgba(246, 240, 230, 0.05),
     rgba(246, 240, 230, 0) 120px
   );
+}
+
+/* ───── Light variant ("Warm Paper") — cream + gold, AA-contrast text ───── */
+/* Same components, inverted token values. Wrap a subtree in `.lumi-light`. */
+.lumi-light {
+  --color-ink: #f3ece0; /* page base — warm cream */
+  --color-ink-soft: #fbf7ef; /* card surface */
+  --color-ink-raised: #ffffff; /* raised chip */
+  --color-paper: #221b13; /* primary text + CTA fill */
+  --color-paper-dim: #574c3f; /* body text */
+  --color-paper-faint: #897e6d; /* meta text */
+  --color-gold: #a4670f; /* accent text + fills (AA on cream) */
+  --color-gold-soft: #bd821d; /* headline accent pop */
+  --color-ember: #c0572c;
+  --lumi-shadow: rgba(64, 44, 18, 0.13);
+}
+
+.lumi-light.lumi-bg,
+.lumi-light .lumi-bg {
+  background-color: var(--color-ink);
+  background-image:
+    radial-gradient(1100px 620px at 50% -8%, rgba(176, 116, 20, 0.1), transparent 60%),
+    radial-gradient(900px 600px at 100% 102%, rgba(192, 87, 44, 0.06), transparent 55%),
+    radial-gradient(700px 700px at -5% 40%, rgba(176, 116, 20, 0.05), transparent 60%);
+}
+
+.lumi-light .lumi-card {
+  background-image: none;
+}
+
+.lumi-light .grain::after {
+  opacity: 0.03;
 }
 
 @layer utilities {

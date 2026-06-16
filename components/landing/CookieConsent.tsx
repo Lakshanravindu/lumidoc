@@ -36,7 +36,7 @@ export default function CookieConsent() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           role="dialog"
           aria-label="Cookie consent"
-          className="fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-2xl rounded-2xl border border-paper/10 bg-ink-raised/95 p-5 shadow-[0_24px_70px_-12px_rgba(0,0,0,0.8)] backdrop-blur-xl sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2"
+          className="fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-2xl rounded-2xl border border-paper/10 bg-ink-raised/95 p-5 shadow-[0_24px_70px_-12px_var(--lumi-shadow)] backdrop-blur-xl sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2"
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <p className="text-sm leading-relaxed text-paper-dim">
