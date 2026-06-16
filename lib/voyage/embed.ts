@@ -30,7 +30,10 @@ async function fetchWithRetry(batch: string[], attempt = 0): Promise<VoyageRespo
         Authorization: `Bearer ${env.VOYAGE_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ input: batch, model: VOYAGE_MODEL }),
+      body: JSON.stringify({
+        inputs: batch.map((text) => ({ content: [{ type: "text", text }] })),
+        model: VOYAGE_MODEL,
+      }),
     });
 
     if (!res.ok) {

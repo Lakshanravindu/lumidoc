@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
     workspaceSettings
   );
 
-  const sourcesJson = JSON.stringify(chunksWithNames);
+  const sourcesJson = encodeURIComponent(JSON.stringify(chunksWithNames));
 
   return result.toTextStreamResponse({
     headers: {

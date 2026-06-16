@@ -55,7 +55,9 @@ export function ChatWindow({ conversation, initialMessages }: ChatWindowProps) {
 
         // Parse sources from header
         const sourcesHeader = res.headers.get("X-Sources");
-        const sources: SourceChunk[] = sourcesHeader ? JSON.parse(sourcesHeader) : [];
+        const sources: SourceChunk[] = sourcesHeader
+          ? JSON.parse(decodeURIComponent(sourcesHeader))
+          : [];
 
         // Stream raw text tokens from toTextStreamResponse
         const reader = res.body!.getReader();
