@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { SUPPORTED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/processors";
 import { env } from "@/env";
+import { checkRateLimit } from "@/lib/ratelimit";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -10,6 +11,9 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimitRes = await checkRateLimit(user.id, "upload");
+  if (rateLimitRes) return rateLimitRes;
 
   const formData = await req.formData();
   const file = formData.get("file") as File | null;

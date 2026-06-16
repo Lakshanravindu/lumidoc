@@ -6,6 +6,8 @@ const serverSchema = z.object({
   VOYAGE_API_KEY: z.string().min(1),
   RESEND_API_KEY: z.string().min(1).optional(),
   RESEND_FROM_EMAIL: z.string().email().optional(),
+  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
 });
 
 const clientSchema = z.object({
@@ -44,6 +46,8 @@ function validateEnv(): AppEnv {
       VOYAGE_API_KEY: process.env.VOYAGE_API_KEY,
       RESEND_API_KEY: process.env.RESEND_API_KEY,
       RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
+      UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+      UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     });
 
     if (!serverEnv.success) {
