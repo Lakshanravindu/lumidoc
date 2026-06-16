@@ -67,31 +67,31 @@ export function NewChatModal({ open, onClose, workspaceId, documents }: NewChatM
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-paper/30 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-md bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
+      <div className="relative z-10 w-full max-w-md bg-ink-soft border border-paper/12 rounded-2xl shadow-[0_24px_70px_-12px_var(--lumi-shadow)] flex flex-col max-h-[80vh]">
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-zinc-800">
+        <div className="flex items-center justify-between p-5 border-b border-paper/10">
           <div>
-            <h2 className="text-base font-semibold text-white">New Conversation</h2>
-            <p className="text-xs text-zinc-500 mt-0.5">Select documents to query</p>
+            <h2 className="text-base font-semibold text-paper">New Conversation</h2>
+            <p className="text-xs text-paper-faint mt-0.5">Select documents to query</p>
           </div>
-          <button onClick={onClose} className="text-zinc-500 hover:text-zinc-300 transition-colors">
+          <button onClick={onClose} className="text-paper-faint hover:text-paper transition-colors">
             <X size={18} />
           </button>
         </div>
 
         {/* Select all / none */}
-        <div className="px-5 py-2.5 border-b border-zinc-800 flex items-center justify-between">
-          <span className="text-xs text-zinc-500">
+        <div className="px-5 py-2.5 border-b border-paper/10 flex items-center justify-between">
+          <span className="text-xs text-paper-faint">
             {selected.size} of {documents.length} selected
           </span>
           <div className="flex gap-3">
-            <button onClick={selectAll} className="text-xs text-violet-400 hover:text-violet-300">
+            <button onClick={selectAll} className="text-xs text-gold hover:text-gold-soft">
               All
             </button>
-            <button onClick={deselectAll} className="text-xs text-zinc-500 hover:text-zinc-300">
+            <button onClick={deselectAll} className="text-xs text-paper-faint hover:text-paper">
               None
             </button>
           </div>
@@ -100,7 +100,7 @@ export function NewChatModal({ open, onClose, workspaceId, documents }: NewChatM
         {/* Document list */}
         <div className="flex-1 overflow-y-auto p-3 space-y-1">
           {documents.length === 0 ? (
-            <p className="text-xs text-zinc-600 text-center py-8">No ready documents</p>
+            <p className="text-xs text-paper-faint text-center py-8">No ready documents</p>
           ) : (
             documents.map((doc) => {
               const isChecked = selected.has(doc.id);
@@ -110,18 +110,18 @@ export function NewChatModal({ open, onClose, workspaceId, documents }: NewChatM
                   onClick={() => toggleDoc(doc.id)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors ${
                     isChecked
-                      ? "bg-violet-500/10 border border-violet-500/30"
-                      : "bg-zinc-800/50 border border-transparent hover:border-zinc-700"
+                      ? "bg-gold/10 border border-gold/35"
+                      : "bg-paper/[0.04] border border-transparent hover:border-paper/12"
                   }`}
                 >
                   <div
                     className={`flex-shrink-0 w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                      isChecked ? "bg-violet-500 border-violet-500" : "border-zinc-600"
+                      isChecked ? "bg-gold border-gold" : "border-paper/25"
                     }`}
                   >
                     {isChecked && (
                       <svg
-                        className="w-2.5 h-2.5 text-white"
+                        className="w-2.5 h-2.5 text-ink"
                         fill="none"
                         viewBox="0 0 10 8"
                         stroke="currentColor"
@@ -131,8 +131,8 @@ export function NewChatModal({ open, onClose, workspaceId, documents }: NewChatM
                       </svg>
                     )}
                   </div>
-                  <FileText size={14} className="flex-shrink-0 text-zinc-500" />
-                  <span className="text-sm text-zinc-300 truncate">{doc.name}</span>
+                  <FileText size={14} className="flex-shrink-0 text-paper-faint" />
+                  <span className="text-sm text-paper-dim truncate">{doc.name}</span>
                 </button>
               );
             })
@@ -140,17 +140,17 @@ export function NewChatModal({ open, onClose, workspaceId, documents }: NewChatM
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-zinc-800 flex items-center justify-between gap-3">
+        <div className="p-4 border-t border-paper/10 flex items-center justify-between gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-sm text-zinc-400 hover:text-zinc-200 transition-colors"
+            className="px-4 py-2 rounded-xl text-sm text-paper-dim hover:text-paper transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={handleCreate}
             disabled={selected.size === 0 || creating}
-            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gold hover:bg-gold-soft disabled:opacity-50 disabled:cursor-not-allowed text-ink text-sm font-medium transition-colors"
           >
             <MessageSquarePlus size={14} />
             {creating ? "Creating…" : "Start Chat"}

@@ -38,7 +38,7 @@ export function MessageBubble({
       <div
         className={cn(
           "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold",
-          isAssistant ? "bg-violet-600 text-white" : "bg-zinc-700 text-zinc-200"
+          isAssistant ? "bg-gold text-ink" : "bg-paper/10 text-paper-dim"
         )}
       >
         {isAssistant ? "L" : "U"}
@@ -51,12 +51,12 @@ export function MessageBubble({
           className={cn(
             "rounded-2xl px-4 py-3 text-sm leading-relaxed",
             isAssistant
-              ? "bg-zinc-800 text-zinc-100 rounded-tl-sm"
-              : "bg-violet-600 text-white rounded-tr-sm"
+              ? "bg-ink-soft text-paper border border-paper/10 rounded-tl-sm"
+              : "bg-paper text-ink rounded-tr-sm"
           )}
         >
           {isAssistant ? (
-            <div className="prose prose-invert prose-sm max-w-none prose-pre:p-0 prose-code:text-violet-300">
+            <div className="prose prose-sm max-w-none prose-pre:p-0 prose-code:text-ember">
               <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
                 {message.content}
               </ReactMarkdown>
@@ -65,7 +65,7 @@ export function MessageBubble({
             <p className="whitespace-pre-wrap">{message.content}</p>
           )}
           {isStreaming && (
-            <span className="inline-block w-1.5 h-4 bg-violet-400 animate-pulse ml-1 align-middle" />
+            <span className="inline-block w-1.5 h-4 bg-gold animate-pulse ml-1 align-middle" />
           )}
         </div>
 
@@ -75,7 +75,7 @@ export function MessageBubble({
               <button
                 key={s.document_id}
                 onClick={() => onSourceClick?.(s)}
-                className="text-xs bg-zinc-700 hover:bg-zinc-600 text-zinc-300 rounded-full px-2 py-0.5 transition-colors"
+                className="text-xs bg-paper/[0.06] hover:bg-paper/10 text-paper-dim border border-paper/10 rounded-full px-2 py-0.5 transition-colors"
               >
                 {s.document_name ?? "Document"}
               </button>
@@ -134,8 +134,8 @@ function ActionButton({
       onClick={onClick}
       title={title}
       className={cn(
-        "p-1.5 rounded-md transition-colors text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700",
-        active && "text-violet-400 bg-zinc-700"
+        "p-1.5 rounded-md transition-colors text-paper-faint hover:text-paper hover:bg-paper/10",
+        active && "text-gold bg-paper/10"
       )}
     >
       {children}

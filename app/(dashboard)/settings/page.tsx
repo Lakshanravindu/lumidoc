@@ -16,8 +16,8 @@ export default async function SettingsPage() {
   return (
     <div className="p-6 lg:p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-white">Settings</h1>
-        <p className="mt-1 text-sm text-neutral-400">Manage your account</p>
+        <h1 className="font-display text-2xl text-paper">Settings</h1>
+        <p className="mt-1 text-sm text-paper-dim">Manage your account</p>
       </div>
 
       <div className="max-w-lg">

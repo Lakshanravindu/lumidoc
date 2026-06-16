@@ -11,7 +11,7 @@ import CookieConsent from "@/components/landing/CookieConsent";
 
 export default function LandingPage() {
   return (
-    <div className="lumi-light">
+    <>
       <SmoothScroll />
       <main className="grain lumi-bg min-h-screen text-paper selection:bg-gold/25 selection:text-paper">
         <Navbar />
@@ -24,6 +24,6 @@ export default function LandingPage() {
         <Footer />
       </main>
       <CookieConsent />
-    </div>
+    </>
   );
 }

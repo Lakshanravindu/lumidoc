@@ -130,12 +130,12 @@ export function ChatWindow({ conversation, initialMessages }: ChatWindowProps) {
       {/* Main chat area */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 flex-shrink-0">
-          <h2 className="text-sm font-medium text-zinc-300 truncate">{conversation.title}</h2>
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-paper/10 flex-shrink-0">
+          <h2 className="text-sm font-medium text-paper-dim truncate">{conversation.title}</h2>
           <a
             href={`/api/conversations/${conversation.id}/export`}
             download
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs text-paper-faint hover:text-paper hover:bg-paper/[0.06] transition-colors"
             title="Export as Markdown"
           >
             <Download size={13} />

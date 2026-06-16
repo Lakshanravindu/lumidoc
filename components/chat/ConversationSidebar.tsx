@@ -65,18 +65,18 @@ export function ConversationSidebar({
 
   return (
     <>
-      <aside className="w-64 flex-shrink-0 border-r border-zinc-800 flex flex-col bg-zinc-950">
-        <div className="p-3 border-b border-zinc-800 space-y-2">
+      <aside className="w-64 flex-shrink-0 border-r border-paper/10 flex flex-col bg-ink-soft">
+        <div className="p-3 border-b border-paper/10 space-y-2">
           <button
             onClick={() => setShowNewChatModal(true)}
             disabled={readyDocs.length === 0}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl bg-gold hover:bg-gold-soft disabled:opacity-50 disabled:cursor-not-allowed text-ink text-sm font-medium transition-colors"
           >
             <MessageSquarePlus size={15} />
             New Chat
           </button>
           {readyDocs.length === 0 && (
-            <p className="text-xs text-zinc-500 text-center">Upload documents first</p>
+            <p className="text-xs text-paper-faint text-center">Upload documents first</p>
           )}
           {/* Search */}
           {conversations.length > 0 && (
@@ -85,14 +85,14 @@ export function ConversationSidebar({
               placeholder="Search conversations…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-300 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-700"
+              className="w-full bg-ink-raised border border-paper/10 rounded-lg px-3 py-1.5 text-xs text-paper-dim placeholder:text-paper-faint focus:outline-none focus:border-gold/40"
             />
           )}
         </div>
 
         <nav className="flex-1 overflow-y-auto p-2 space-y-0.5">
           {filteredConversations.length === 0 && (
-            <p className="text-xs text-zinc-600 text-center py-8">
+            <p className="text-xs text-paper-faint text-center py-8">
               {searchQuery ? "No matches" : "No conversations yet"}
             </p>
           )}
@@ -108,17 +108,17 @@ export function ConversationSidebar({
                       if (e.key === "Enter") handleRename(conv.id);
                       if (e.key === "Escape") setRenamingId(null);
                     }}
-                    className="flex-1 text-xs bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-zinc-200 outline-none focus:border-violet-500"
+                    className="flex-1 text-xs bg-ink-raised border border-paper/15 rounded px-2 py-1 text-paper outline-none focus:border-gold/50"
                   />
                   <button
                     onClick={() => handleRename(conv.id)}
-                    className="text-violet-400 hover:text-violet-300"
+                    className="text-gold hover:text-gold-soft"
                   >
                     <Check size={13} />
                   </button>
                   <button
                     onClick={() => setRenamingId(null)}
-                    className="text-zinc-500 hover:text-zinc-300"
+                    className="text-paper-faint hover:text-paper"
                   >
                     <X size={13} />
                   </button>
@@ -129,11 +129,11 @@ export function ConversationSidebar({
                   className={cn(
                     "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors",
                     activeId === conv.id
-                      ? "bg-zinc-800 text-zinc-100"
-                      : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900"
+                      ? "bg-paper/[0.07] text-paper"
+                      : "text-paper-dim hover:text-paper hover:bg-paper/[0.04]"
                   )}
                 >
-                  {conv.pinned && <Pin size={11} className="text-violet-400 flex-shrink-0" />}
+                  {conv.pinned && <Pin size={11} className="text-gold flex-shrink-0" />}
                   <span className="flex-1 truncate">{conv.title}</span>
                   <span className="opacity-0 group-hover:opacity-100 flex gap-0.5 transition-opacity">
                     <button
@@ -142,19 +142,19 @@ export function ConversationSidebar({
                         setRenamingId(conv.id);
                         setRenameValue(conv.title);
                       }}
-                      className="p-0.5 text-zinc-500 hover:text-zinc-300"
+                      className="p-0.5 text-paper-faint hover:text-paper"
                     >
                       <Pencil size={11} />
                     </button>
                     <button
                       onClick={(e) => handlePin(e, conv)}
-                      className="p-0.5 text-zinc-500 hover:text-violet-400"
+                      className="p-0.5 text-paper-faint hover:text-gold"
                     >
                       <Pin size={11} />
                     </button>
                     <button
                       onClick={(e) => handleDelete(e, conv.id)}
-                      className="p-0.5 text-zinc-500 hover:text-red-400"
+                      className="p-0.5 text-paper-faint hover:text-red-500"
                     >
                       <Trash2 size={11} />
                     </button>
@@ -166,10 +166,10 @@ export function ConversationSidebar({
         </nav>
 
         {/* Workspace settings link */}
-        <div className="p-3 border-t border-zinc-800">
+        <div className="p-3 border-t border-paper/10">
           <Link
             href={`/workspace/${workspaceId}/settings`}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-paper-faint hover:text-paper hover:bg-paper/[0.04] transition-colors"
           >
             <Settings size={13} />
             AI Settings

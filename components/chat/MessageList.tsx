@@ -27,8 +27,8 @@ export function MessageList({
 
   if (messages.length === 0 && !streamingContent) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center gap-3 text-zinc-500 select-none">
-        <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center">
+      <div className="flex-1 flex flex-col items-center justify-center gap-3 text-paper-faint select-none">
+        <div className="w-12 h-12 rounded-full bg-paper/[0.06] border border-paper/10 flex items-center justify-center">
           <span className="text-2xl">💬</span>
         </div>
         <p className="text-sm">Ask anything about your documents</p>

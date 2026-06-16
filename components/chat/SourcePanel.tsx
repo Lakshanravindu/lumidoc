@@ -20,10 +20,10 @@ export function SourcePanel({ sources, onClose }: SourcePanelProps) {
   }, {});
 
   return (
-    <div className="w-80 flex-shrink-0 border-l border-zinc-800 flex flex-col bg-zinc-900">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
-        <h3 className="text-sm font-medium text-zinc-200">Sources</h3>
-        <button onClick={onClose} className="text-zinc-500 hover:text-zinc-300 transition-colors">
+    <div className="w-80 flex-shrink-0 border-l border-paper/10 flex flex-col bg-ink-soft">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-paper/10">
+        <h3 className="text-sm font-medium text-paper">Sources</h3>
+        <button onClick={onClose} className="text-paper-faint hover:text-paper transition-colors">
           <X size={16} />
         </button>
       </div>
@@ -34,34 +34,36 @@ export function SourcePanel({ sources, onClose }: SourcePanelProps) {
           const isOpen = expanded === docId;
 
           return (
-            <div key={docId} className="rounded-xl border border-zinc-800 overflow-hidden">
+            <div key={docId} className="rounded-xl border border-paper/10 overflow-hidden">
               <button
                 onClick={() => setExpanded(isOpen ? null : docId)}
-                className="w-full flex items-center justify-between px-3 py-2.5 bg-zinc-800 hover:bg-zinc-750 transition-colors text-left"
+                className="w-full flex items-center justify-between px-3 py-2.5 bg-paper/[0.05] hover:bg-paper/10 transition-colors text-left"
               >
-                <span className="text-xs font-medium text-zinc-200 truncate flex-1">{docName}</span>
-                <span className="text-xs text-zinc-500 mr-2">
+                <span className="text-xs font-medium text-paper truncate flex-1">{docName}</span>
+                <span className="text-xs text-paper-faint mr-2">
                   {chunks.length} chunk{chunks.length !== 1 ? "s" : ""}
                 </span>
                 {isOpen ? (
-                  <ChevronUp size={13} className="text-zinc-400" />
+                  <ChevronUp size={13} className="text-paper-faint" />
                 ) : (
-                  <ChevronDown size={13} className="text-zinc-400" />
+                  <ChevronDown size={13} className="text-paper-faint" />
                 )}
               </button>
 
               {isOpen && (
-                <div className="divide-y divide-zinc-800">
+                <div className="divide-y divide-paper/10">
                   {chunks.map((chunk) => (
                     <div key={chunk.chunk_id} className="px-3 py-2.5">
                       <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-xs text-zinc-500">Chunk {chunk.chunk_index + 1}</span>
+                        <span className="text-xs text-paper-faint">
+                          Chunk {chunk.chunk_index + 1}
+                        </span>
                         <RelevanceBar score={chunk.combined_score} />
-                        <span className="text-xs text-zinc-500 ml-auto">
+                        <span className="text-xs text-paper-faint ml-auto">
                           {(chunk.combined_score * 100).toFixed(0)}%
                         </span>
                       </div>
-                      <p className="text-xs text-zinc-400 leading-relaxed line-clamp-4">
+                      <p className="text-xs text-paper-dim leading-relaxed line-clamp-4">
                         {chunk.content}
                       </p>
                     </div>
@@ -79,11 +81,11 @@ export function SourcePanel({ sources, onClose }: SourcePanelProps) {
 function RelevanceBar({ score }: { score: number }) {
   const pct = Math.min(100, Math.max(0, score * 100));
   return (
-    <div className="flex-1 h-1 bg-zinc-700 rounded-full overflow-hidden">
+    <div className="flex-1 h-1 bg-paper/10 rounded-full overflow-hidden">
       <div
         className={cn(
           "h-full rounded-full",
-          pct > 70 ? "bg-emerald-500" : pct > 40 ? "bg-amber-500" : "bg-zinc-500"
+          pct > 70 ? "bg-emerald-500" : pct > 40 ? "bg-amber-500" : "bg-paper/30"
         )}
         style={{ width: `${pct}%` }}
       />

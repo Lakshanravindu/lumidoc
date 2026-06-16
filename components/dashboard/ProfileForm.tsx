@@ -49,12 +49,12 @@ export default function ProfileForm({
   }
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-      <h2 className="mb-4 text-sm font-medium text-white">Profile</h2>
+    <div className="rounded-xl border border-paper/10 bg-ink-soft p-6">
+      <h2 className="mb-4 text-sm font-medium text-paper">Profile</h2>
 
       {/* Avatar */}
       <div className="mb-6 flex items-center gap-4">
-        <div className="flex size-14 items-center justify-center rounded-full bg-white/10 text-lg font-semibold text-white">
+        <div className="flex size-14 items-center justify-center rounded-full border border-gold/30 bg-gold/15 text-lg font-semibold text-gold">
           {initialAvatar ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={initialAvatar} alt="" className="size-14 rounded-full object-cover" />
@@ -63,39 +63,39 @@ export default function ProfileForm({
           )}
         </div>
         <div>
-          <p className="text-sm font-medium text-white">{displayName || email}</p>
-          <p className="text-xs text-neutral-500">{email}</p>
+          <p className="text-sm font-medium text-paper">{displayName || email}</p>
+          <p className="text-xs text-paper-faint">{email}</p>
         </div>
       </div>
 
       <form onSubmit={handleSave} className="space-y-4">
         <div>
-          <label className="mb-1 block text-xs font-medium text-neutral-300">Display name</label>
+          <label className="mb-1 block text-xs font-medium text-paper-dim">Display name</label>
           <input
             type="text"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="Your name"
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-neutral-500 outline-none transition focus:border-white/30 focus:ring-2 focus:ring-white/10"
+            className="lumi-input"
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-neutral-300">Email</label>
+          <label className="mb-1 block text-xs font-medium text-paper-dim">Email</label>
           <input
             type="email"
             value={email}
             disabled
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-500 outline-none cursor-not-allowed"
+            className="lumi-input cursor-not-allowed opacity-60"
           />
-          <p className="mt-1 text-xs text-neutral-600">Email cannot be changed here</p>
+          <p className="mt-1 text-xs text-paper-faint">Email cannot be changed here</p>
         </div>
 
-        {error && <p className="text-xs text-red-400">{error}</p>}
+        {error && <p className="text-xs font-medium text-red-600">{error}</p>}
 
         <button
           type="submit"
           disabled={saving}
-          className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-white/90 disabled:opacity-50"
+          className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-ink transition hover:bg-gold-soft disabled:opacity-50"
         >
           {saving ? "Saving…" : saved ? "Saved!" : "Save changes"}
         </button>

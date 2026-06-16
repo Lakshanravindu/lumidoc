@@ -37,11 +37,9 @@ export default async function WorkspaceSettingsPage({
   return (
     <div className="p-6 lg:p-10 max-w-2xl">
       <div className="mb-8">
-        <p className="text-xs uppercase tracking-widest text-zinc-500">
-          {workspace.name} / Settings
-        </p>
-        <h1 className="mt-1 text-2xl font-semibold text-white">AI Behaviour</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="text-xs uppercase tracking-widest text-gold">{workspace.name} / Settings</p>
+        <h1 className="mt-1 font-display text-2xl text-paper">AI Behaviour</h1>
+        <p className="mt-1 text-sm text-paper-dim">
           Customize how the AI responds within this workspace.
         </p>
       </div>

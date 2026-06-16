@@ -13,15 +13,15 @@ export function SuggestionChips({ suggestions, onSelect }: SuggestionChipsProps)
   return (
     <div className="px-4 pb-2">
       <div className="flex items-center gap-1.5 mb-2">
-        <Sparkles size={12} className="text-violet-400" />
-        <span className="text-xs text-zinc-500">Follow-up suggestions</span>
+        <Sparkles size={12} className="text-gold" />
+        <span className="text-xs text-paper-faint">Follow-up suggestions</span>
       </div>
       <div className="flex flex-wrap gap-2">
         {suggestions.map((s, i) => (
           <button
             key={i}
             onClick={() => onSelect(s)}
-            className="text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-violet-500 text-zinc-300 hover:text-zinc-100 rounded-full px-3 py-1.5 transition-all text-left"
+            className="text-xs bg-ink-soft hover:bg-paper/[0.06] border border-paper/10 hover:border-gold/40 text-paper-dim hover:text-paper rounded-full px-3 py-1.5 transition-all text-left"
           >
             {s}
           </button>

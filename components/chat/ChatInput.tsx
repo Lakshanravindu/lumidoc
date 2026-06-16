@@ -48,7 +48,7 @@ export function ChatInput({
 
   return (
     <div className="px-4 pb-4 pt-2">
-      <div className="flex items-end gap-2 bg-zinc-800 border border-zinc-700 rounded-2xl px-3 py-2 focus-within:border-violet-500 transition-colors">
+      <div className="flex items-end gap-2 bg-ink-soft border border-paper/12 rounded-2xl px-3 py-2 focus-within:border-gold/50 transition-colors">
         <textarea
           ref={textareaRef}
           value={value}
@@ -58,7 +58,7 @@ export function ChatInput({
           placeholder={placeholder}
           disabled={disabled}
           rows={1}
-          className="flex-1 bg-transparent resize-none text-sm text-zinc-100 placeholder:text-zinc-500 outline-none leading-relaxed py-1 max-h-[200px]"
+          className="flex-1 bg-transparent resize-none text-sm text-paper placeholder:text-paper-faint outline-none leading-relaxed py-1 max-h-[200px]"
         />
         <button
           onClick={isLoading ? onStop : handleSubmit}
@@ -66,16 +66,16 @@ export function ChatInput({
           className={cn(
             "flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center transition-colors mb-0.5",
             isLoading
-              ? "bg-zinc-600 hover:bg-zinc-500 text-zinc-200"
+              ? "bg-paper/15 hover:bg-paper/25 text-paper"
               : value.trim()
-                ? "bg-violet-600 hover:bg-violet-500 text-white"
-                : "bg-zinc-700 text-zinc-500 cursor-not-allowed"
+                ? "bg-gold hover:bg-gold-soft text-ink"
+                : "bg-paper/10 text-paper-faint cursor-not-allowed"
           )}
         >
           {isLoading ? <Square size={14} /> : <Send size={14} />}
         </button>
       </div>
-      <p className="text-xs text-zinc-600 text-center mt-2">
+      <p className="text-xs text-paper-faint text-center mt-2">
         Shift+Enter for new line · Enter to send
       </p>
     </div>
