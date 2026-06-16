@@ -200,3 +200,25 @@
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+/* shared input style for auth forms */
+.lumi-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(246, 240, 230, 0.1);
+  background-color: rgba(38, 32, 26, 0.7);
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  color: #f6f0e6;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.lumi-input::placeholder {
+  color: #837a6c;
+}
+.lumi-input:focus {
+  border-color: rgba(230, 178, 76, 0.45);
+  box-shadow: 0 0 0 3px rgba(230, 178, 76, 0.1);
+}
