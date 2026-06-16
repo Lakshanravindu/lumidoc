@@ -30,7 +30,7 @@ export default function AnswerDemo() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.8, ease }}
-          className="lumi-card grid gap-4 overflow-hidden rounded-3xl border border-paper/[0.12] bg-ink-soft/70 p-4 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.85)] backdrop-blur-xl lg:grid-cols-[0.85fr_1.15fr]"
+          className="lumi-card grid gap-4 overflow-hidden rounded-3xl border border-paper/[0.12] bg-ink-soft/70 p-4 shadow-[0_40px_120px_-30px_var(--lumi-shadow)] backdrop-blur-xl lg:grid-cols-[0.85fr_1.15fr]"
         >
           {/* left: the source document */}
           <div className="relative rounded-2xl border border-paper/10 bg-ink p-6">
