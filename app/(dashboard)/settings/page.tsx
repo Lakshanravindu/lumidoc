@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ProfileForm from "@/components/dashboard/ProfileForm";
 import AccountActions from "@/components/dashboard/AccountActions";
@@ -8,10 +9,12 @@ export default async function SettingsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) redirect("/login");
+
   const { data: profile } = await supabase
     .from("user_profiles")
     .select("display_name, avatar_url")
-    .eq("id", user!.id)
+    .eq("id", user.id)
     .single();
 
   return (
@@ -23,12 +26,12 @@ export default async function SettingsPage() {
 
       <div className="space-y-5">
         <ProfileForm
-          userId={user!.id}
-          email={user!.email ?? ""}
+          userId={user.id}
+          email={user.email ?? ""}
           displayName={profile?.display_name ?? ""}
           avatarUrl={profile?.avatar_url ?? ""}
         />
-        <AccountActions email={user!.email ?? ""} />
+        <AccountActions email={user.email ?? ""} />
       </div>
     </div>
   );
