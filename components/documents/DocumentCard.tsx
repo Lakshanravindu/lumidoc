@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { FileText, Trash2, MessageSquare, MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ProcessingStatus from "./ProcessingStatus";
+import { toast } from "@/components/ui/toast";
 import type { DocumentRecord } from "@/types";
 
 const FILE_ICONS: Record<string, string> = {
@@ -32,6 +33,7 @@ interface DocumentCardProps {
 export default function DocumentCard({ document: doc, workspaceId, onDelete }: DocumentCardProps) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [, startTransition] = useTransition();
 
@@ -41,12 +43,19 @@ export default function DocumentCard({ document: doc, workspaceId, onDelete }: D
   async function handleDelete() {
     if (deleting) return;
     setDeleting(true);
-    setMenuOpen(false);
     try {
       const res = await fetch(`/api/documents/${doc.id}`, { method: "DELETE" });
-      if (res.ok) onDelete(doc.id);
+      if (res.ok) {
+        onDelete(doc.id);
+        toast("Document deleted");
+      } else {
+        toast("Could not delete document", "error");
+      }
+    } catch {
+      toast("Could not delete document", "error");
     } finally {
       setDeleting(false);
+      setConfirmDelete(false);
     }
   }
 
@@ -76,7 +85,7 @@ export default function DocumentCard({ document: doc, workspaceId, onDelete }: D
             <MoreHorizontal className="size-4" />
           </button>
           {menuOpen && (
-            <div className="absolute right-0 top-8 z-10 min-w-[140px] rounded-xl border border-paper/[0.08] bg-ink-raised py-1 shadow-2xl">
+            <div className="animate-pop-in absolute right-0 top-8 z-10 min-w-[150px] origin-top-right rounded-xl border border-paper/[0.08] bg-ink-raised py-1 shadow-[0_18px_44px_-12px_var(--lumi-shadow)]">
               <button
                 onClick={handleChat}
                 disabled={doc.status !== "ready"}
@@ -86,12 +95,14 @@ export default function DocumentCard({ document: doc, workspaceId, onDelete }: D
                 Chat
               </button>
               <button
-                onClick={handleDelete}
-                disabled={deleting}
-                className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-red-400/80 hover:bg-red-500/[0.06] hover:text-red-400 disabled:opacity-40"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setConfirmDelete(true);
+                }}
+                className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-[#b4302a] hover:bg-red-500/[0.08]"
               >
                 <Trash2 className="size-3.5" />
-                {deleting ? "Deleting…" : "Delete"}
+                Delete
               </button>
             </div>
           )}
@@ -123,6 +134,38 @@ export default function DocumentCard({ document: doc, workspaceId, onDelete }: D
         <p className="mt-2 truncate text-xs text-red-400/70" title={doc.error_msg}>
           {doc.error_msg}
         </p>
+      )}
+
+      {/* Delete confirmation overlay */}
+      {confirmDelete && (
+        <div className="animate-pop-in absolute inset-0 z-20 flex flex-col justify-center gap-3 rounded-2xl border border-paper/[0.08] bg-ink-soft/95 p-5 shadow-[0_18px_50px_-12px_var(--lumi-shadow)] backdrop-blur-md">
+          <div className="flex items-center gap-2.5">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-[#b4302a]">
+              <Trash2 className="size-4" />
+            </span>
+            <p className="text-sm font-semibold text-paper">Delete document?</p>
+          </div>
+          <p className="text-xs leading-relaxed text-paper-dim">
+            <span className="font-medium text-paper">“{doc.name}”</span> will be permanently
+            removed.
+          </p>
+          <div className="mt-1 flex items-center gap-2">
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="h-9 flex-1 rounded-xl bg-[#b4302a] text-sm font-medium text-white shadow-[0_8px_20px_-8px_rgba(180,48,42,0.6)] transition hover:bg-[#9c2823] active:scale-[0.98] disabled:opacity-60"
+            >
+              {deleting ? "Deleting…" : "Delete"}
+            </button>
+            <button
+              onClick={() => setConfirmDelete(false)}
+              disabled={deleting}
+              className="h-9 rounded-xl border border-paper/15 px-4 text-sm text-paper-dim transition hover:bg-paper/[0.04] hover:text-paper"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

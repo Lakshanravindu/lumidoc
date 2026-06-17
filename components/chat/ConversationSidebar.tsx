@@ -6,6 +6,7 @@ import { useState } from "react";
 import { MessageSquarePlus, Pin, Trash2, Pencil, Check, X, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NewChatModal } from "@/components/chat/NewChatModal";
+import { toast } from "@/components/ui/toast";
 import type { ConversationRecord, DocumentRecord } from "@/types";
 
 interface ConversationSidebarProps {
@@ -25,6 +26,7 @@ export function ConversationSidebar({
   const [showNewChatModal, setShowNewChatModal] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const readyDocs = documents.filter((d) => d.status === "ready");
@@ -33,34 +35,47 @@ export function ConversationSidebar({
     ? conversations.filter((c) => c.title.toLowerCase().includes(searchQuery.toLowerCase()))
     : conversations;
 
-  async function handleDelete(e: React.MouseEvent, convId: string) {
-    e.preventDefault();
-    await fetch(`/api/conversations/${convId}`, { method: "DELETE" });
-    if (activeId === convId) {
-      router.push(`/workspace/${workspaceId}/chat`);
+  async function handleDelete(convId: string) {
+    const res = await fetch(`/api/conversations/${convId}`, { method: "DELETE" });
+    setConfirmDeleteId(null);
+    if (res.ok) {
+      toast("Conversation deleted");
+      if (activeId === convId) {
+        router.push(`/workspace/${workspaceId}/chat`);
+      }
+      router.refresh();
+    } else {
+      toast("Could not delete conversation", "error");
     }
-    router.refresh();
   }
 
   async function handlePin(e: React.MouseEvent, conv: ConversationRecord) {
     e.preventDefault();
-    await fetch(`/api/conversations/${conv.id}`, {
+    const res = await fetch(`/api/conversations/${conv.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pinned: !conv.pinned }),
     });
-    router.refresh();
+    if (res.ok) {
+      toast(conv.pinned ? "Unpinned" : "Pinned to top");
+      router.refresh();
+    }
   }
 
   async function handleRename(convId: string) {
     if (!renameValue.trim()) return;
-    await fetch(`/api/conversations/${convId}`, {
+    const res = await fetch(`/api/conversations/${convId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: renameValue.trim() }),
     });
     setRenamingId(null);
-    router.refresh();
+    if (res.ok) {
+      toast("Conversation renamed");
+      router.refresh();
+    } else {
+      toast("Could not rename conversation", "error");
+    }
   }
 
   return (
@@ -123,6 +138,22 @@ export function ConversationSidebar({
                     <X size={13} />
                   </button>
                 </div>
+              ) : confirmDeleteId === conv.id ? (
+                <div className="animate-pop-in flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/[0.06] px-2.5 py-2">
+                  <span className="flex-1 truncate text-xs text-paper-dim">Delete chat?</span>
+                  <button
+                    onClick={() => handleDelete(conv.id)}
+                    className="text-xs font-medium text-[#b4302a] hover:text-[#9c2823]"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => setConfirmDeleteId(null)}
+                    className="text-xs text-paper-faint hover:text-paper-dim"
+                  >
+                    Cancel
+                  </button>
+                </div>
               ) : (
                 <Link
                   href={`/workspace/${workspaceId}/chat/${conv.id}`}
@@ -153,8 +184,11 @@ export function ConversationSidebar({
                       <Pin size={11} />
                     </button>
                     <button
-                      onClick={(e) => handleDelete(e, conv.id)}
-                      className="p-0.5 text-paper-faint hover:text-red-500"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setConfirmDeleteId(conv.id);
+                      }}
+                      className="p-0.5 text-paper-faint hover:text-[#b4302a]"
                     >
                       <Trash2 size={11} />
                     </button>
