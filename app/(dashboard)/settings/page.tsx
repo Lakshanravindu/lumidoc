@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import ProfileForm from "@/components/dashboard/ProfileForm";
+import AccountActions from "@/components/dashboard/AccountActions";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -14,19 +15,20 @@ export default async function SettingsPage() {
     .single();
 
   return (
-    <div className="p-6 lg:p-8">
+    <div className="mx-auto max-w-2xl p-6 lg:p-10">
       <div className="mb-8">
-        <h1 className="font-display text-2xl text-paper">Settings</h1>
-        <p className="mt-1 text-sm text-paper-dim">Manage your account</p>
+        <h1 className="font-display text-3xl italic text-paper">Settings</h1>
+        <p className="mt-1.5 text-sm text-paper-dim">Manage your account and your data</p>
       </div>
 
-      <div className="max-w-lg">
+      <div className="space-y-5">
         <ProfileForm
           userId={user!.id}
           email={user!.email ?? ""}
           displayName={profile?.display_name ?? ""}
           avatarUrl={profile?.avatar_url ?? ""}
         />
+        <AccountActions email={user!.email ?? ""} />
       </div>
     </div>
   );
