@@ -90,7 +90,7 @@ export default function WorkspaceList({ workspaces: initial }: WorkspaceListProp
       {showCreate ? (
         <form
           onSubmit={handleCreate}
-          className="flex flex-col justify-center gap-2 rounded-2xl border border-dashed border-gold/30 bg-gold/[0.04] p-5"
+          className="animate-pop-in flex flex-col justify-center gap-2 rounded-2xl border border-gold/30 bg-gold/[0.05] p-5 shadow-[0_12px_30px_-14px_var(--lumi-shadow)]"
         >
           <input
             autoFocus
@@ -135,7 +135,7 @@ export default function WorkspaceList({ workspaces: initial }: WorkspaceListProp
       {workspaces.map((ws) => (
         <div
           key={ws.id}
-          className="group relative rounded-2xl border border-paper/[0.07] bg-ink-soft transition-all hover:border-gold/25 hover:bg-ink-raised"
+          className="group relative rounded-2xl border border-paper/[0.07] bg-ink-soft shadow-[0_1px_2px_rgba(60,44,18,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/30 hover:bg-ink-raised hover:shadow-[0_18px_40px_-16px_var(--lumi-shadow)]"
         >
           {renamingId === ws.id ? (
             <form
@@ -143,7 +143,7 @@ export default function WorkspaceList({ workspaces: initial }: WorkspaceListProp
                 e.preventDefault();
                 handleRename(ws.id);
               }}
-              className="flex items-center gap-2 p-4"
+              className="flex flex-col gap-2.5 p-5"
               onClick={(e) => e.stopPropagation()}
             >
               <input
@@ -151,18 +151,23 @@ export default function WorkspaceList({ workspaces: initial }: WorkspaceListProp
                 type="text"
                 value={renameName}
                 onChange={(e) => setRenameName(e.target.value)}
-                className="lumi-input flex-1"
+                className="lumi-input"
               />
-              <button type="submit" className="text-xs font-medium text-gold hover:text-gold-soft">
-                Save
-              </button>
-              <button
-                type="button"
-                onClick={() => setRenamingId(null)}
-                className="text-xs text-paper-faint hover:text-paper-dim"
-              >
-                Cancel
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="submit"
+                  className="h-9 flex-1 rounded-xl bg-gold text-sm font-semibold text-ink transition hover:bg-gold-soft active:scale-[0.98]"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRenamingId(null)}
+                  className="h-9 rounded-xl border border-paper/10 px-3 text-sm text-paper-faint transition hover:bg-paper/[0.04] hover:text-paper-dim"
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
           ) : (
             <button
@@ -209,7 +214,7 @@ export default function WorkspaceList({ workspaces: initial }: WorkspaceListProp
                 <MoreHorizontal className="size-4" />
               </button>
               {menuOpenId === ws.id && (
-                <div className="absolute right-0 top-8 z-10 min-w-[140px] rounded-xl border border-paper/[0.08] bg-ink-raised py-1 shadow-2xl">
+                <div className="animate-pop-in absolute right-0 top-8 z-10 min-w-[150px] origin-top-right rounded-xl border border-paper/[0.08] bg-ink-raised py-1 shadow-[0_18px_44px_-12px_var(--lumi-shadow)]">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -240,21 +245,27 @@ export default function WorkspaceList({ workspaces: initial }: WorkspaceListProp
 
           {/* Delete confirmation overlay */}
           {confirmDeleteId === ws.id && (
-            <div className="absolute inset-0 z-20 flex flex-col justify-center gap-3 rounded-2xl border border-red-500/30 bg-ink-soft/95 p-5 backdrop-blur-sm">
-              <p className="text-sm font-medium text-paper">Delete “{ws.name}”?</p>
-              <p className="text-xs text-paper-dim">
-                This permanently removes the workspace and all its documents.
+            <div className="animate-pop-in absolute inset-0 z-20 flex flex-col justify-center gap-3 rounded-2xl border border-paper/[0.08] bg-ink-soft/95 p-5 shadow-[0_18px_50px_-12px_var(--lumi-shadow)] backdrop-blur-md">
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-[#b4302a]">
+                  <Trash2 className="size-4" />
+                </span>
+                <p className="text-sm font-semibold text-paper">Delete workspace?</p>
+              </div>
+              <p className="text-xs leading-relaxed text-paper-dim">
+                <span className="font-medium text-paper">“{ws.name}”</span> and all its documents
+                will be permanently removed.
               </p>
               <div className="mt-1 flex items-center gap-2">
                 <button
                   onClick={() => handleDelete(ws.id)}
-                  className="h-9 flex-1 rounded-xl bg-red-600 text-sm font-medium text-white transition hover:bg-red-500 active:scale-[0.98]"
+                  className="h-9 flex-1 rounded-xl bg-[#b4302a] text-sm font-medium text-white shadow-[0_8px_20px_-8px_rgba(180,48,42,0.6)] transition hover:bg-[#9c2823] active:scale-[0.98]"
                 >
                   Delete
                 </button>
                 <button
                   onClick={() => setConfirmDeleteId(null)}
-                  className="h-9 rounded-xl border border-paper/10 px-3 text-sm text-paper-dim transition hover:text-paper"
+                  className="h-9 rounded-xl border border-paper/15 px-4 text-sm text-paper-dim transition hover:bg-paper/[0.04] hover:text-paper"
                 >
                   Cancel
                 </button>
