@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Download } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { SourcePanel } from "./SourcePanel";
@@ -12,9 +12,10 @@ import type { ChatMessage, ConversationRecord, SourceChunk } from "@/types";
 interface ChatWindowProps {
   conversation: ConversationRecord;
   initialMessages: ChatMessage[];
+  documentNames?: string[];
 }
 
-export function ChatWindow({ conversation, initialMessages }: ChatWindowProps) {
+export function ChatWindow({ conversation, initialMessages, documentNames = [] }: ChatWindowProps) {
   const router = useRouter();
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [streamingContent, setStreamingContent] = useState<string | undefined>();
@@ -130,17 +131,31 @@ export function ChatWindow({ conversation, initialMessages }: ChatWindowProps) {
       {/* Main chat area */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-paper/10 flex-shrink-0">
-          <h2 className="text-sm font-medium text-paper-dim truncate">{conversation.title}</h2>
-          <a
-            href={`/api/conversations/${conversation.id}/export`}
-            download
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs text-paper-faint hover:text-paper hover:bg-paper/[0.06] transition-colors"
-            title="Export as Markdown"
-          >
-            <Download size={13} />
-            Export
-          </a>
+        <div className="border-b border-paper/10 flex-shrink-0">
+          <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-2.5">
+            <div className="min-w-0">
+              <h2 className="truncate text-sm font-medium text-paper">{conversation.title}</h2>
+              {documentNames.length > 0 && (
+                <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-paper-faint">
+                  <FileText size={11} className="shrink-0 text-gold/70" />
+                  <span className="truncate">
+                    {documentNames.length === 1
+                      ? documentNames[0]
+                      : `${documentNames.length} documents`}
+                  </span>
+                </p>
+              )}
+            </div>
+            <a
+              href={`/api/conversations/${conversation.id}/export`}
+              download
+              className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-paper-faint hover:bg-paper/[0.06] hover:text-paper transition-colors"
+              title="Export as Markdown"
+            >
+              <Download size={13} />
+              Export
+            </a>
+          </div>
         </div>
 
         <MessageList

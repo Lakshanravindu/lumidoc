@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "@/components/ui/toast";
 
 interface ProfileFormProps {
   userId: string;
@@ -42,8 +43,10 @@ export default function ProfileForm({
     setSaving(false);
     if (error) {
       setError(error.message);
+      toast("Could not save profile", "error");
     } else {
       setSaved(true);
+      toast("Profile saved");
       setTimeout(() => setSaved(false), 2000);
     }
   }

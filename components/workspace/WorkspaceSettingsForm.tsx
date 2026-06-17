@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Save } from "lucide-react";
+import { toast } from "@/components/ui/toast";
 import type { WorkspaceSettings } from "@/types";
 
 interface WorkspaceSettingsFormProps {
@@ -41,14 +42,18 @@ export function WorkspaceSettingsForm({
     setSaving(true);
     setSaved(false);
     try {
-      await fetch(`/api/workspaces/${workspaceId}`, {
+      const res = await fetch(`/api/workspaces/${workspaceId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ settings }),
       });
+      if (!res.ok) throw new Error();
       setSaved(true);
+      toast("Settings saved");
       router.refresh();
       setTimeout(() => setSaved(false), 2500);
+    } catch {
+      toast("Could not save settings", "error");
     } finally {
       setSaving(false);
     }
@@ -66,12 +71,18 @@ export function WorkspaceSettingsForm({
               onClick={() => setSettings((s) => ({ ...s, response_style: opt.value }))}
               className={`p-3 rounded-xl border text-left transition-colors ${
                 settings.response_style === opt.value
-                  ? "border-gold/50 bg-gold/10 text-gold"
-                  : "border-paper/10 bg-ink-soft text-paper-dim hover:border-paper/20"
+                  ? "border-gold/50 bg-gold/10"
+                  : "border-paper/10 bg-ink-soft hover:border-paper/20"
               }`}
             >
-              <p className="text-sm font-medium">{opt.label}</p>
-              <p className="text-xs mt-0.5 opacity-70">{opt.desc}</p>
+              <p
+                className={`text-sm font-medium ${
+                  settings.response_style === opt.value ? "text-gold" : "text-paper"
+                }`}
+              >
+                {opt.label}
+              </p>
+              <p className="text-xs mt-0.5 text-paper-dim">{opt.desc}</p>
             </button>
           ))}
         </div>

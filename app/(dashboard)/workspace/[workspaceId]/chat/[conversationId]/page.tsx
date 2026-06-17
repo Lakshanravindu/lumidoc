@@ -16,13 +16,19 @@ export default async function ConversationPage({
 
   const { data: conversation, error } = await supabase
     .from("conversations")
-    .select("*")
+    .select("*, conversation_documents(documents(name))")
     .eq("id", conversationId)
     .eq("workspace_id", workspaceId)
     .eq("user_id", user!.id)
     .single();
 
   if (error || !conversation) notFound();
+
+  const documentNames = (
+    (conversation.conversation_documents as { documents: { name: string } | null }[]) ?? []
+  )
+    .map((cd) => cd.documents?.name)
+    .filter((n): n is string => Boolean(n));
 
   const { data: messages } = await supabase
     .from("messages")
@@ -39,6 +45,10 @@ export default async function ConversationPage({
   }));
 
   return (
-    <ChatWindow conversation={conversation as ConversationRecord} initialMessages={chatMessages} />
+    <ChatWindow
+      conversation={conversation as ConversationRecord}
+      initialMessages={chatMessages}
+      documentNames={documentNames}
+    />
   );
 }

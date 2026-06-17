@@ -11,7 +11,7 @@ export function SuggestionChips({ suggestions, onSelect }: SuggestionChipsProps)
   if (suggestions.length === 0) return null;
 
   return (
-    <div className="px-4 pb-2">
+    <div className="mx-auto w-full max-w-3xl px-4 pb-2">
       <div className="flex items-center gap-1.5 mb-2">
         <Sparkles size={12} className="text-gold" />
         <span className="text-xs text-paper-faint">Follow-up suggestions</span>
