@@ -1,26 +1,27 @@
-name: CI
+name: CI / CD
 
 on:
   push:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
+  workflow_dispatch:
 
-# Deploys are handled by Vercel's native Git integration (vercel[bot]),
-# which builds with the project's environment variables. This workflow is
-# only the code-quality gate.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  lint-and-typecheck:
+  quality:
     name: Lint & Type Check
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
@@ -31,3 +32,60 @@ jobs:
 
       - name: Type check
         run: npm run type-check
+
+  deploy:
+    name: Deploy to Cloudflare (${{ github.ref_name == 'main' && 'production' || 'staging' }})
+    needs: quality
+    if: github.event_name != 'pull_request' && (github.ref_name == 'main' || github.ref_name == 'develop')
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+      url: ${{ github.ref_name == 'main' && vars.PRODUCTION_URL || vars.STAGING_URL }}
+    env:
+      # NEXT_PUBLIC_* are inlined into the client bundle at build time; server
+      # secrets are needed at build too because route modules import env.ts.
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_APP_URL: ${{ github.ref_name == 'main' && vars.PRODUCTION_URL || vars.STAGING_URL }}
+      NEXT_PUBLIC_APP_NAME: LumiDoc
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      WRANGLER_ENV_FLAG: ${{ github.ref_name == 'main' && '' || '--env staging' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build for Cloudflare Workers
+        run: npx opennextjs-cloudflare build
+
+      - name: Prepare runtime secrets
+        # Optional secrets are omitted when empty so env.ts's .optional()
+        # schema sees undefined rather than "" (which would fail .url()).
+        run: |
+          jq -n 'env | with_entries(select(.key | IN(
+            "NEXT_PUBLIC_SUPABASE_URL","NEXT_PUBLIC_SUPABASE_ANON_KEY","NEXT_PUBLIC_APP_URL","NEXT_PUBLIC_APP_NAME",
+            "SUPABASE_SERVICE_ROLE_KEY","ANTHROPIC_API_KEY","VOYAGE_API_KEY",
+            "UPSTASH_REDIS_REST_URL","UPSTASH_REDIS_REST_TOKEN","RESEND_API_KEY","RESEND_FROM_EMAIL"
+          )) | select(.value != ""))' > "$RUNNER_TEMP/secrets.json"
+
+      - name: Deploy
+        run: npx wrangler deploy $WRANGLER_ENV_FLAG --secrets-file "$RUNNER_TEMP/secrets.json"
+
+      - name: Clean up secrets file
+        if: always()
+        run: rm -f "$RUNNER_TEMP/secrets.json"
