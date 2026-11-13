@@ -57,7 +57,8 @@ jobs:
       RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      WRANGLER_ENV_FLAG: ${{ github.ref_name == 'main' && '' || '--env staging' }}
+      # Non-empty value first: '' is falsy, so `cond && '' || x` always yields x.
+      WRANGLER_ENV_FLAG: ${{ github.ref_name != 'main' && '--env staging' || '' }}
     steps:
       - uses: actions/checkout@v4
 
