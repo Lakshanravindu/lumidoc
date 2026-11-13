@@ -5,9 +5,9 @@ AI-powered Document Q&A application. Upload any document and have intelligent co
 ## Stack
 
 - **Frontend:** Next.js 15 (App Router), TypeScript, Tailwind CSS 4, Shadcn/UI
-- **Backend:** Next.js API Routes (edge runtime), Supabase (PostgreSQL + pgvector + Auth + Storage)
+- **Backend:** Next.js API Routes, Supabase (PostgreSQL + pgvector + Auth + Storage)
 - **AI:** Anthropic Claude (Q&A + Vision OCR), Voyage AI `voyage-3` embeddings
-- **Deployment:** Vercel
+- **Deployment:** Cloudflare Workers via [OpenNext](https://opennext.js.org/cloudflare)
 
 ## Getting Started
 
@@ -50,6 +50,8 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run build`      | Production build             |
 | `npm run lint`       | Run ESLint                   |
 | `npm run type-check` | TypeScript type checking     |
+| `npm run preview`    | Run in local Workers runtime |
+| `npm run deploy`     | Deploy to Cloudflare Workers |
 
 ## Project Structure
 

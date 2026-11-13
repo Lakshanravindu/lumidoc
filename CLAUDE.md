@@ -10,7 +10,7 @@ Full specs: `Documentation/features.md`, `Documentation/tech-spec.md`, `Document
 
 | Layer           | Technology                                                          |
 | --------------- | ------------------------------------------------------------------- |
-| Framework       | Next.js 15 (App Router, edge runtime)                               |
+| Framework       | Next.js 15 (App Router) via OpenNext on Cloudflare Workers          |
 | Language        | TypeScript 5 (strict mode)                                          |
 | Styling         | Tailwind CSS 4 + Shadcn/UI                                          |
 | Database        | Supabase (PostgreSQL 15 + pgvector + Auth + Storage)                |
@@ -18,7 +18,7 @@ Full specs: `Documentation/features.md`, `Documentation/tech-spec.md`, `Document
 | AI — Vision/OCR | Anthropic `claude-haiku-4-5`                                        |
 | Embeddings      | Voyage AI `voyage-3` (1024 dims)                                    |
 | Background jobs | Supabase Edge Functions (Deno)                                      |
-| Deployment      | Vercel                                                              |
+| Deployment      | Cloudflare Workers (`*.workers.dev`) via `@opennextjs/cloudflare`   |
 
 ---
 
@@ -29,6 +29,8 @@ npm run dev          # dev server (Turbopack)
 npm run build        # production build
 npm run lint         # ESLint
 npm run type-check   # tsc --noEmit
+npm run preview      # build + run locally in the Workers runtime (wrangler)
+npm run deploy       # build + deploy to Cloudflare (CI does this automatically)
 ```
 
 Pre-commit hook runs `lint-staged` automatically (ESLint + Prettier on staged files).
@@ -38,8 +40,8 @@ Pre-commit hook runs `lint-staged` automatically (ESLint + Prettier on staged fi
 ## Branching Strategy
 
 ```
-main        → production (auto-deploy to Vercel, protected)
-develop     → staging (Vercel preview)
+main        → production (auto-deploy to Cloudflare Worker `lumidoc`, protected)
+develop     → staging (auto-deploy to Cloudflare Worker `lumidoc-staging`)
 feature/*   → one branch per feature, PR into develop
 hotfix/*    → merge directly to main after review
 ```
@@ -152,14 +154,20 @@ All tables have RLS enabled. Every API route validates session via Supabase Auth
 
 ## CI/CD
 
+Workflow: `.github/workflows/ci.yml`
+
 ```
-Push to develop / PR     → lint + type-check → preview deploy (Vercel)
-PR merged into main      → lint + type-check → production deploy (Vercel)
+PR → develop/main        → lint + type-check
+Push to develop          → lint + type-check → deploy Worker `lumidoc-staging`
+Push to main             → lint + type-check → deploy Worker `lumidoc` (production)
 ```
 
-Preview URL is auto-commented on every PR.
+Deploy = `opennextjs-cloudflare build` → `wrangler deploy --secrets-file` (runtime secrets are uploaded with each version). Config: `wrangler.jsonc`, `open-next.config.ts`.
 
-GitHub Secrets required: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
+GitHub Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `VOYAGE_API_KEY`, optional `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL`.
+GitHub Variables: `PRODUCTION_URL`, `STAGING_URL` (the `*.workers.dev` URLs; used as `NEXT_PUBLIC_APP_URL`).
+
+Workers runtime notes: un-awaited background work is cancelled once the response is sent — use `after()` from `next/server`. Keep the Worker under the 3 MiB (gzip) free-plan limit; don't import heavy parsers (`lib/processors/*`) from API routes.
 
 ---
 
