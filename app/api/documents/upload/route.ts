@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { SUPPORTED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/processors";
+import { SUPPORTED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/processors/constants";
 import { env } from "@/env";
 import { checkRateLimit } from "@/lib/ratelimit";
 
@@ -74,16 +74,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to create document record" }, { status: 500 });
   }
 
-  // Trigger Edge Function asynchronously — fire and forget
-  fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/process-document`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
-    },
-    body: JSON.stringify({ documentId: document.id }),
-  }).catch(() => {
-    // Edge Function trigger failure is non-fatal; document remains in 'processing' state
+  // Workers cancel un-awaited fetches once the response is sent; after() keeps
+  // the Edge Function trigger alive via waitUntil.
+  after(async () => {
+    await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/process-document`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+      body: JSON.stringify({ documentId: document.id }),
+    }).catch(() => {
+      // Trigger failure is non-fatal; document remains in 'processing' state
+    });
   });
 
   return NextResponse.json({ document }, { status: 201 });

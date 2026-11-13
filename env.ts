@@ -17,6 +17,12 @@ const clientSchema = z.object({
   NEXT_PUBLIC_APP_NAME: z.string().min(1),
 });
 
+// CI systems (e.g. GitHub Actions) pass unset secrets as "" — treat that as
+// absent so optional keys don't fail .url()/.email() validation.
+function emptyToUndefined(value: string | undefined): string | undefined {
+  return value === "" ? undefined : value;
+}
+
 type ClientEnv = z.infer<typeof clientSchema>;
 type ServerEnv = z.infer<typeof serverSchema>;
 type AppEnv = ClientEnv & ServerEnv;
@@ -44,10 +50,10 @@ function validateEnv(): AppEnv {
       SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
       ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
       VOYAGE_API_KEY: process.env.VOYAGE_API_KEY,
-      RESEND_API_KEY: process.env.RESEND_API_KEY,
-      RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
-      UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
-      UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
+      RESEND_API_KEY: emptyToUndefined(process.env.RESEND_API_KEY),
+      RESEND_FROM_EMAIL: emptyToUndefined(process.env.RESEND_FROM_EMAIL),
+      UPSTASH_REDIS_REST_URL: emptyToUndefined(process.env.UPSTASH_REDIS_REST_URL),
+      UPSTASH_REDIS_REST_TOKEN: emptyToUndefined(process.env.UPSTASH_REDIS_REST_TOKEN),
     });
 
     if (!serverEnv.success) {

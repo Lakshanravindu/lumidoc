@@ -11,12 +11,17 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "prepare": "husky"
+    "prepare": "husky",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.83",
     "@anthropic-ai/sdk": "^0.104.1",
     "@base-ui/react": "^1.5.0",
+    "@opennextjs/cloudflare": "^1.20.17",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@supabase/ssr": "^0.12.0",
@@ -32,7 +37,7 @@
     "lenis": "^1.3.23",
     "lucide-react": "^1.17.0",
     "mammoth": "^1.12.0",
-    "next": "15.5.19",
+    "next": "15.5",
     "pdf-parse": "^2.4.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -67,7 +72,7 @@
     "@vitejs/plugin-react": "^6.0.2",
     "@vitest/coverage-v8": "^4.1.8",
     "eslint": "^9",
-    "eslint-config-next": "15.5.19",
+    "eslint-config-next": "15.5",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
@@ -75,6 +80,7 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.1.1",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.8",
+    "wrangler": "^4.161.0"
   }
 }
